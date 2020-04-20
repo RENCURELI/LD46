@@ -277,5 +277,7 @@ int main()
 
 	}
 	glfwTerminate();
+	std::cin.get();
+	
 	return 0;
 }

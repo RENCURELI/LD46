@@ -1,0 +1,32 @@
+﻿  Renderer.cpp
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Generating code
+  17 of 595 functions ( 2.9%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+IndexBuffer.obj : warning LNK4049: locally defined symbol ___glewDeleteBuffers imported
+IndexBuffer.obj : warning LNK4049: locally defined symbol ___glewGenBuffers imported
+IndexBuffer.obj : warning LNK4049: locally defined symbol ___glewBufferData imported
+IndexBuffer.obj : warning LNK4049: locally defined symbol ___glewBindBuffer imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewUseProgram imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewUniform4f imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewLinkProgram imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewDeleteShader imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewShaderSource imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewDeleteProgram imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewAttachShader imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewGetUniformLocation imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewValidateProgram imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewGetShaderInfoLog imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewCreateProgram imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewCreateShader imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewCompileShader imported
+Shader.obj : warning LNK4049: locally defined symbol ___glewGetShaderiv imported
+VertexArray.obj : warning LNK4049: locally defined symbol ___glewGenVertexArrays imported
+VertexArray.obj : warning LNK4049: locally defined symbol ___glewDeleteVertexArrays imported
+VertexArray.obj : warning LNK4049: locally defined symbol ___glewVertexAttribPointer imported
+VertexArray.obj : warning LNK4049: locally defined symbol ___glewBindVertexArray imported
+VertexArray.obj : warning LNK4049: locally defined symbol ___glewEnableVertexAttribArray imported
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'D:\Projets_CPP\LudumDare46\Release\vc120.pdb'; linking object as if no debug info
+  LudumDare46.vcxproj -> D:\Projets_CPP\LudumDare46\Release\LudumDare46.exe
