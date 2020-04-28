@@ -11,22 +11,11 @@
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 #include "Shader.h"
+#include "Player.h"
 
 
 #define SPEED 20;
 
-
-
-struct Player
-{
-	float x;
-	float y;
-	float width;
-	float height;
-	float r;
-	float g;
-	float b;
-};
 
 struct Ball
 {
@@ -47,8 +36,6 @@ static float Normalize(float min, float max, float val)
 	return normalized;
 }
 
-float afXOffset = 0.0f, afYOffset = 0.0f;
-float bfXOffset = 0.0f, bfYOffset = 0.0f;
 float cfXOffset = 0.0f, cfYOffset = 0.0f;
 
 Renderer renderer;
@@ -67,23 +54,8 @@ int main()
 		return -1;
 	}
 
-	Player player1;
-	player1.x = -1175.0f;
-	player1.y = 0.0f;
-	player1.width = 50.0f;
-	player1.height = 200.0f;
-	player1.r = 0.0f;
-	player1.g = 150.0f;
-	player1.b = 230.0f;
-
-	Player player2;
-	player2.x = 1175.0f;
-	player2.y = 0.0f;
-	player2.width = 50.0f;
-	player2.height = 200.0f;
-	player2.r = 230.0f;
-	player2.g = 20.0f;
-	player2.b = 230.0f;
+	Player player1(-1175.0f, 0.0f, 50.0f, 200.0f, 0.0f, 150.f, 230.f);
+	Player player2(1175.0f, 0.0f, 50.0f, 200.0f, 0.0f, 150.f, 230.f);
 
 	Ball ball;
 	ball.x = 0.0f;
@@ -157,21 +129,21 @@ int main()
 			//Move Player 1
 			shader.Bind();
 			{
-				if (glfwGetKey(window, 87) && afYOffset < 1 - Normalize(0, player1.height, player1.height / 10))
+				if (glfwGetKey(window, 87) && player1.fYOffset < 1 - Normalize(0, player1.height, player1.height / 10))
 				{
-					afYOffset = Normalize(0, 720, player1.y++) * SPEED;
+					player1.PlayerMove(Normalize(0, 720, player1.y++) * 20);
 				}
-				else if (glfwGetKey(window, 83) && afYOffset > -1 - Normalize(0, player1.height, player1.height / 10))
+				else if (glfwGetKey(window, 83) && player1.fYOffset > -1 - Normalize(0, player1.height, player1.height / 10))
 				{
-					afYOffset = Normalize(0, 720, player1.y--) * SPEED;
+					player1.PlayerMove(Normalize(0, 720, player1.y--) * 20);
 				}
 				std::vector<float> fNewData(sizeof(positionsA) / sizeof(*positionsA));
 				memcpy(&fNewData[0], positionsA, sizeof(positionsA));
 
 				for (int iVertex = 0; iVertex < sizeof(positionsA) / sizeof(*positionsA); iVertex += 2)
 				{
-					fNewData[iVertex] += afXOffset;
-					fNewData[iVertex + 1] += afYOffset;
+					fNewData[iVertex] += player1.fXOffset;
+					fNewData[iVertex + 1] += player1.fYOffset;
 				}
 
 				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(positionsA), &fNewData[0]);
@@ -183,22 +155,21 @@ int main()
 			//Move Player2
 			shader.Bind();
 			{
-				if (glfwGetKey(window, 73) && bfYOffset < 1 - Normalize(0, player2.height, player2.height / 10))
+				if (glfwGetKey(window, 73) && player2.fYOffset < 1 - Normalize(0, player2.height, player2.height / 10))
 				{
-					bfYOffset = Normalize(0, 720, player2.y++) * SPEED;
-					std::cout << bfYOffset << std::endl;
+					player2.PlayerMove(Normalize(0, 720, player2.y++) * 20);
 				}
-				else if (glfwGetKey(window, 75) && bfYOffset > -1 - Normalize(0, player2.height, player2.height / 10))
+				else if (glfwGetKey(window, 75) && player2.fYOffset > -1 - Normalize(0, player2.height, player2.height / 10))
 				{
-					bfYOffset = Normalize(0, 720, player2.y--) * SPEED;
+					player2.PlayerMove(Normalize(0, 720, player2.y--) * 20);
 				}
 				std::vector<float> fNewData(sizeof(positionsB) / sizeof(*positionsB));
 				memcpy(&fNewData[0], positionsB, sizeof(positionsB));
 
 				for (int iVertex = 0; iVertex < sizeof(positionsB) / sizeof(*positionsB); iVertex += 2)
 				{
-					fNewData[iVertex] += bfXOffset;
-					fNewData[iVertex + 1] += bfYOffset;
+					fNewData[iVertex] += player2.fXOffset;
+					fNewData[iVertex + 1] += player2.fYOffset;
 				}
 
 				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(positionsB), &fNewData[0]);
@@ -230,12 +201,12 @@ int main()
 					std::cout << ball.lives << " LIVES REMAINING" << std::endl;
 				}
 
-				if (cfXOffset > Normalize(0, 1280, player2.x) - Normalize(0, 720, player2.width / 2) && cfYOffset < bfYOffset + Normalize(0, 720, player2.height) && cfYOffset > bfYOffset - Normalize(0, 720, player2.height))
+				if (cfXOffset > Normalize(0, 1280, player2.x) - Normalize(0, 720, player2.width / 2) && cfYOffset < player2.fYOffset + Normalize(0, 720, player2.height) && cfYOffset > player2.fYOffset - Normalize(0, 720, player2.height))
 				{
 					ball.multX *= -1;
 				}
 
-				if (cfXOffset < Normalize(0, 1280, player1.x) + Normalize(0, 720, player1.width / 2) && cfYOffset < afYOffset + Normalize(0, 720, player1.height) && cfYOffset > afYOffset - Normalize(0, 720, player1.height))
+				if (cfXOffset < Normalize(0, 1280, player1.x) + Normalize(0, 720, player1.width / 2) && cfYOffset < player1.fYOffset + Normalize(0, 720, player1.height) && cfYOffset > player1.fYOffset - Normalize(0, 720, player1.height))
 				{
 					ball.multX *= -1;
 				}
