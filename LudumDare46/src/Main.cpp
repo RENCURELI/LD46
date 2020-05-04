@@ -12,21 +12,10 @@
 #include "VertexBufferLayout.h"
 #include "Shader.h"
 #include "Player.h"
+#include "Ball.h"
 
 
 #define SPEED 20;
-
-
-struct Ball
-{
-	float x;
-	float y;
-	float radius;
-	int multX;
-	int multY;
-	float speed;
-	int lives;
-};
 
 
 static float Normalize(float min, float max, float val)
@@ -35,8 +24,6 @@ static float Normalize(float min, float max, float val)
 	
 	return normalized;
 }
-
-float cfXOffset = 0.0f, cfYOffset = 0.0f;
 
 Renderer renderer;
 
@@ -57,14 +44,7 @@ int main()
 	Player player1(-1175.0f, 0.0f, 50.0f, 200.0f, 0.0f, 150.f, 230.f);
 	Player player2(1175.0f, 0.0f, 50.0f, 200.0f, 0.0f, 150.f, 230.f);
 
-	Ball ball;
-	ball.x = 0.0f;
-	ball.y = 0.0f;
-	ball.radius = 25.0f;
-	ball.multX = 1;
-	ball.multY = 1;
-	ball.speed = 10.0f;
-	ball.lives = 10;
+	Ball ball(0.0f, 0.0f, 25.0f, 1, 1, 10.0f, 10);
 	
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
@@ -180,42 +160,42 @@ int main()
 			//Ball movement
 			shader.Bind();
 			{
-				cfYOffset = Normalize(0, 720, ball.y += 1 * ball.multY) * ball.speed;
-				cfXOffset = Normalize(0, 720, ball.x += 1 * ball.multX) * ball.speed;
+				ball.fYOffset = Normalize(0, 720, ball.y += 1 * ball.multY) * ball.speed;
+				ball.fXOffset = Normalize(0, 720, ball.x += 1 * ball.multX) * ball.speed;
 
-				if (cfYOffset > 1 - Normalize(0, 720, ball.radius))
+				if (ball.fYOffset > 1 - Normalize(0, 720, ball.radius))
 					ball.multY *= -1;
-				else if (cfYOffset < -1 - Normalize(0, 720, ball.radius))
+				else if (ball.fYOffset < -1 - Normalize(0, 720, ball.radius))
 					ball.multY *= -1;
 
-				if (cfXOffset > 1 - Normalize(0, 1280, ball.radius) && ball.lives > 0)
+				if (ball.fXOffset > 1 - Normalize(0, 1280, ball.radius) && ball.lives > 0)
 				{
 					ball.multX *= -1;
 					ball.lives--;
 					std::cout << ball.lives << " LIVES REMAINING" << std::endl;
 				}
-				else if (cfXOffset < -1 - Normalize(0, 1280, ball.radius) && ball.lives > 0)
+				else if (ball.fXOffset < -1 - Normalize(0, 1280, ball.radius) && ball.lives > 0)
 				{
 					ball.multX *= -1;
 					ball.lives--;
 					std::cout << ball.lives << " LIVES REMAINING" << std::endl;
 				}
 
-				if (cfXOffset > Normalize(0, 1280, player2.x) - Normalize(0, 720, player2.width / 2) && cfYOffset < player2.fYOffset + Normalize(0, 720, player2.height) && cfYOffset > player2.fYOffset - Normalize(0, 720, player2.height))
+				if (ball.fXOffset > Normalize(0, 1280, player2.x) - Normalize(0, 720, player2.width / 2) && ball.fYOffset < player2.fYOffset + Normalize(0, 720, player2.height) && ball.fYOffset > player2.fYOffset - Normalize(0, 720, player2.height))
 				{
 					ball.multX *= -1;
 				}
 
-				if (cfXOffset < Normalize(0, 1280, player1.x) + Normalize(0, 720, player1.width / 2) && cfYOffset < player1.fYOffset + Normalize(0, 720, player1.height) && cfYOffset > player1.fYOffset - Normalize(0, 720, player1.height))
+				if (ball.fXOffset < Normalize(0, 1280, player1.x) + Normalize(0, 720, player1.width / 2) && ball.fYOffset < player1.fYOffset + Normalize(0, 720, player1.height) && ball.fYOffset > player1.fYOffset - Normalize(0, 720, player1.height))
 				{
 					ball.multX *= -1;
 				}
 
-				if ((cfXOffset < -1 || cfXOffset >= 1) && ball.lives <= 0)
+				if ((ball.fXOffset < -1 || ball.fXOffset >= 1) && ball.lives <= 0)
 				{
 					std::cout << "BALL IS DEAD" << std::endl;
-					cfYOffset = 0;
-					cfXOffset = 0;
+					ball.fYOffset = 0;
+					ball.fXOffset = 0;
 					ball.x = 0.0f;
 					ball.y = 0.0f;
 					break;
@@ -226,8 +206,8 @@ int main()
 
 				for (int iVertex = 0; iVertex < sizeof(positionsC) / sizeof(*positionsC); iVertex += 2)
 				{
-					fNewData[iVertex] += cfXOffset;
-					fNewData[iVertex + 1] += cfYOffset;
+					fNewData[iVertex] += ball.fXOffset;
+					fNewData[iVertex + 1] += ball.fYOffset;
 				}
 
 				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(positionsC), &fNewData[0]);
